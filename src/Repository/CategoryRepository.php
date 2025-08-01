@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Category;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -44,8 +45,7 @@ class CategoryRepository extends ServiceEntityRepository
      */
     public function findAllOrdered(): array
     {
-        $dql = 'SELECT category FROM App\Entity\Category as category ORDER BY category.name';
-
+        #$dql = 'SELECT category FROM App\Entity\Category as category ORDER BY category.name';
         #ZA category.name dodaj ASC lub NIC NIE DODAWAJ jak chcesz mieć posegrowane w kolejnosci alfabetycznej
         #$dql = 'SELECT category FROM App\Entity\Category as category ORDER BY category.name ASC';
         #$dql = 'SELECT category FROM App\Entity\Category as category ORDER BY category.name';
@@ -53,9 +53,16 @@ class CategoryRepository extends ServiceEntityRepository
         #ZA category.name dodaj DESC jak chcesz mieć na odwrót posegrowane
         #$dql = 'SELECT category FROM App\Entity\Category as category ORDER BY category.name DESC';
 
-        $query = $this->getEntityManager()->createQuery($dql);
+        #$query = $this->getEntityManager()->createQuery($dql);
         #dd($query->getSQL()); - WYŚWIETLENIE KODU SQL
 
+        #return $query->getResult();
+        #-----------------------------------------------------------------------------------------------------
+        $gb = $this->createQueryBuilder('category')
+            ->addOrderBy('category.name', Criteria::DESC);
+
+        $query = $gb->getQuery();
+        #dd($query->getDQL());
         return $query->getResult();
     }
 
