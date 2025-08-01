@@ -3,7 +3,7 @@
 {% block body %}
     
         
-<h1 class="p-5 my-4 text-3xl font-semibold text-center"><span class="fa {{ category.iconKey }}"></span> {{ category.name }} Fortunes</h1>
+<h1 class="p-5 my-4 text-3xl font-semibold text-center"><span class="fa {{ category.iconKey }}"></span> {{ categoryName }} Fortunes</h1>
 <div class="flex justify-center px-4 mb-16">
     <div>
         <table class="mb-6 border table-auto">
@@ -13,7 +13,8 @@
                         Fortunes
                     </th>
                     <th class="p-4 border">
-                        Print History ({{ fortunesPrinted|number_format }} total)
+                        Print History ({{ fortunesPrinted|number_format }} total
+                        {{ fortunesAverage|number_format }} average)
                     </th>
                 </tr>
             </thead>

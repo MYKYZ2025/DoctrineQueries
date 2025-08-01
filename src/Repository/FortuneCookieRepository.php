@@ -22,17 +22,21 @@ class FortuneCookieRepository extends ServiceEntityRepository
         parent::__construct($registry, FortuneCookie::class);
     }
 
-    public function countNumberPrintedForCategory(Category $category): int
+    public function countNumberPrintedForCategory(Category $category): array
     {
         $result = $this->createQueryBuilder('fortuneCookie')
             ->select('SUM(fortuneCookie.numberPrinted) AS fortunesPrinted')
+            ->addSelect('AVG(fortuneCookie.numberPrinted) AS fortunesAverage')
+            ->addSelect('category.name')
+            ->innerJoin('fortuneCookie.category', 'category')
             ->andWhere('fortuneCookie.category = :category')
             ->setParameter('category', $category)
             ->getQuery()
-            ->getSingleScalarResult();
+            ->getSingleResult();
+        #dd($result);
 
         #dd($result);
-        return (int)$result;
+        return $result;
     }
 
 
