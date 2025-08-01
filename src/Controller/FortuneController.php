@@ -14,7 +14,6 @@ class FortuneController extends AbstractController
     #[Route('/', name: 'app_homepage')]
     public function index(Request $request, CategoryRepository $categoryRepository): Response
     {
-        $categories = $categoryRepository->findAllOrdered();
         $searchTerm = $request->query->get('q');
         if($searchTerm){
             $categories = $categoryRepository->search($searchTerm);
@@ -28,8 +27,13 @@ class FortuneController extends AbstractController
     }
 
     #[Route('/category/{id}', name: 'app_category_show')]
-    public function showCategory(Category $category): Response
+    public function showCategory(int $id, CategoryRepository $categoryRepository): Response
     {
+        $category = $categoryRepository-> findWithFortunesJoin($id);
+        if (!$category){
+            throw $this->createNotFoundException('Category not found!');
+        }
+
         return $this->render('fortune/showCategory.html.twig',[
             'category' => $category
         ]);
