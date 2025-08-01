@@ -72,6 +72,7 @@ class CategoryRepository extends ServiceEntityRepository
     public function search(string $term): array
     {
         return $this->createQueryBuilder('category')
+            ->addSelect('fortuneCookie')
             ->leftJoin('category.fortuneCookies', 'fortuneCookie')
             ->andWhere('category.name LIKE :searchTerm OR category.iconKey LIKE :searchTerm OR fortuneCookie.fortune LIKE :searchTerm')
             ->setParameter('searchTerm', '%'.$term.'%') # '%'.$term.'%' znak: '%' określa nam, że możemy podać dowolną liczbę znaków->liter
