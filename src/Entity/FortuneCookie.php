@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\FortuneCookieRepository;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: FortuneCookieRepository::class)]
@@ -100,5 +101,11 @@ class FortuneCookie
         $this->category = $category;
 
         return $this;
+    }
+
+    public static function createInProductionCriteria(): Criteria
+    {
+        return Criteria::create()
+            ->andWhere(Criteria::expr()->eq('discontinued', false));
     }
 }
