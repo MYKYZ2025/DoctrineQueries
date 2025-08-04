@@ -22,7 +22,9 @@ doctrine:
                 enabled: true
                 parameters:
                     discontinued: false
-
+        dql:
+            string_functions:
+                RAND: DoctrineExtensions\Query\Mysql\Rand
 when@test:
     doctrine:
         dbal:

@@ -35,7 +35,7 @@ class FortuneController extends AbstractController
     #[Route('/category/{id}', name: 'app_category_show')]
     public function showCategory(int $id, CategoryRepository $categoryRepository, FortuneCookieRepository $fortuneCookieRepository): Response
     {
-        $category = $categoryRepository-> find($id);
+        $category = $categoryRepository-> findWithFortunesJoin($id);
         if (!$category){
             throw $this->createNotFoundException('Category not found!');
         }
@@ -44,7 +44,7 @@ class FortuneController extends AbstractController
         return $this->render('fortune/showCategory.html.twig', [
             'category' => $category,
             'fortunesPrinted' => $stats->fortunesPrinted,
-            'fortunesAverage' => $stats->fortunesAverage,
+            'fortunesAverage' => $stats->fortunesAverage, 
             'categoryName' => $stats->categoryName,
         ]);
     }

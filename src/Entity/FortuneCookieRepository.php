@@ -12,4 +12,15 @@ class FortuneCookieRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, FortuneCookie::class);
     }
+
+    public function findRandom(): ?FortuneCookie
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT f FROM App\Entity\FortuneCookie f ORDER BY FUNCTION(\'RAND\')'
+        )->setMaxResults(1);
+
+        return $query->getOneOrNullResult();
+    }
 }
