@@ -25,22 +25,35 @@ class FortuneCookieRepository extends ServiceEntityRepository
 
     public function countNumberPrintedForCategory(Category $category): CategoryFortuneStats
     {
-        $result = $this->createQueryBuilder('fortuneCookie')
-            ->select(sprintf(
-                'NEW %s(
-                SUM(fortuneCookie.numberPrinted),
-                AVG(fortuneCookie.numberPrinted),
-                category.name
-                )',
-                CategoryFortuneStats::class
-            ))
-            ->innerJoin('fortuneCookie.category', 'category')
-            ->andWhere('fortuneCookie.category = :category')
-            ->setParameter('category', $category)
-            ->getQuery()
-            ->getSingleResult();
+        // $result = $this->createQueryBuilder('fortuneCookie')
+        //     ->select(sprintf(
+        //         'NEW %s(
+        //         SUM(fortuneCookie.numberPrinted),
+        //         AVG(fortuneCookie.numberPrinted),
+        //         category.name
+        //         )',
+        //         CategoryFortuneStats::class
+        //     ))
+        //     ->innerJoin('fortuneCookie.category', 'category')
+        //     ->andWhere('fortuneCookie.category = :category')
+        //     ->setParameter('category', $category)
+        //     ->getQuery()
+        //     ->getSingleResult();
 
-        return $result;
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = 'SELECT SUM(fortune_cookie.number_printed) AS fortunesPrinted,
+               AVG(fortune_cookie.number_printed) AS fortunesAverage,
+               category.name AS categoryName
+        FROM fortune_cookie
+        INNER JOIN category ON category.id = fortune_cookie.category_id 
+        WHERE fortune_cookie.category_id = :category';
+    // fortunes_cookie.category_id='.$category->getId(); <- TEGO NIE UŻYWAMY BO MOŻE TO BYĆ UŻYTE PRZY SQL-injection
+    // fortunes_cookie.category_id= :category'; <- TO UŻYWAMY BO NIE PRZEKAZUJEMY BEZPOŚREDNIO JAKIEŚ WARTOŚCI/PLIKU
+        $stmt = $conn->prepare($sql);
+        $stmt->bindValue('category', $category->getId());
+        $result = $stmt->executeQuery();
+
+        return new CategoryFortuneStats(...$result->fetchAssociative());
     }
 
 
