@@ -7,7 +7,7 @@
 <div class="grid grid-cols-2 gap-6 px-10 mt-8 mb-10 xl:container xl:mx-auto">
     {% for category in categories %}
         <a class="p-4 text-center text-white bg-orange-400 rounded-full hover:bg-orange-500" href="{{ path('app_category_show', {'id':  category.id}) }}">
-            <span class="fa {{ category.iconKey }}"></span> <span class="text-lg font-bold">{{ category.name }}</span>  ({{ category.fortuneCookiesStillInProduction|length }})
+            <span class="fa {{ category.iconKey }}"></span> <span class="text-lg font-bold">{{ category.name }}</span>  ({{ category.fortuneCookies|length }})
         </a>
     {% else %}
         <h3>Hmm... there don't seem to be any fortunes</h3>
