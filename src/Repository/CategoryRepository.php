@@ -49,7 +49,7 @@ class CategoryRepository extends ServiceEntityRepository
         #ZA category.name dodaj ASC lub NIC NIE DODAWAJ jak chcesz mieć posegrowane w kolejnosci alfabetycznej
         #$dql = 'SELECT category FROM App\Entity\Category as category ORDER BY category.name ASC';
         #$dql = 'SELECT category FROM App\Entity\Category as category ORDER BY category.name';
-
+        
         #ZA category.name dodaj DESC jak chcesz mieć na odwrót posegrowane
         #$dql = 'SELECT category FROM App\Entity\Category as category ORDER BY category.name DESC';
 
