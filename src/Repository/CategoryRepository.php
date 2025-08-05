@@ -59,10 +59,11 @@ class CategoryRepository extends ServiceEntityRepository
 
         #return $query->getResult();
         #-----------------------------------------------------------------------------------------------------
-        $gb = $this->createQueryBuilder('category')
+        $qb=$this->addGroupByCategoryAndCountFortunes()
             ->addOrderBy('category.name', Criteria::DESC);
 
-        $query = $gb->getQuery();
+
+        $query = $qb->getQuery();
         #dd($query->getDQL());
         return $query->getResult();
     }
@@ -72,10 +73,10 @@ class CategoryRepository extends ServiceEntityRepository
      */
     public function search(string $term): array
     {
-        $termList = explode(' ', $term);
-        $qb= $this->addOrderByCategoryName();
+        $termList=explode(' ', $term);
+        $qb=$this->addOrderByCategoryName();
 
-        return $this->addFortuneCookieJoinAndSelect($qb)
+        return $this->addGroupByCategoryAndCountFortunes($qb)
             ->andWhere('category.name LIKE :searchTerm OR category.name IN (:termList) OR category.iconKey LIKE :searchTerm OR fortuneCookie.fortune LIKE :searchTerm')
             ->setParameter('searchTerm', '%'.$term.'%') # '%'.$term.'%' znak: '%' określa nam, że możemy podać dowolną liczbę znaków->liter
             ->setParameter('termList', $termList)
@@ -90,6 +91,14 @@ class CategoryRepository extends ServiceEntityRepository
             ->setParameter('id', $id)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    private function addGroupByCategoryAndCountFortunes(QueryBuilder $qg = null): QueryBuilder
+    {
+        return ($qb ?? $this->createQueryBuilder('category'))
+            ->addSelect('COUNT(fortuneCookie.id) AS fortuneCookieTotal')
+            ->leftJoin('category.fortuneCookies', 'fortuneCookie')
+            ->addGroupBy('category.id');
     }
 
     public function addFortuneCookieJoinAndSelect(QueryBuilder $qb = null): QueryBuilder
